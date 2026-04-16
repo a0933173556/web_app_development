@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- 餘額總覽卡片 -->
+<div class="glass-card mb-5 p-5 text-center">
+    <h2 class="text-secondary text-uppercase tracking-wide fs-6 mb-3">Total Balance</h2>
+    <h1 class="balance-display {{ 'text-income' if total_balance >= 0 else 'text-expense' }}">
+        {% if total_balance >= 0 %}
+            $ {{ "{:,}".format(total_balance) }}
+        {% else %}
+            - $ {{ "{:,}".format(total_balance | abs) }}
+        {% endif %}
+    </h1>
+    <p class="text-muted"><small>包含所有帳戶的最終可衡量資產</small></p>
+</div>
+
+<!-- 歷史紀錄列表 -->
+<div class="glass-card p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0">最近紀錄</h3>
+    </div>
+    
+    {% if records|length > 0 %}
+    <div class="table-responsive">
+        <table class="table table-hover table-borderless">
+            <thead>
+                <tr class="text-muted opacity-75 text-uppercase fs-7">
+                    <th>日期</th>
+                    <th>名稱</th>
+                    <th>類別</th>
+                    <th class="text-end">金額</th>
+                    <th class="text-end">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td>{{ record.date.strftime('%Y-%m-%d') }}</td>
+                    <td class="fw-bold">{{ record.title }}</td>
+                    <td>
+                        {% if record.type == 'income' %}
+                            <span class="badge bg-success bg-opacity-25 text-success rounded-pill px-3">收入</span>
+                        {% else %}
+                            <span class="badge bg-danger bg-opacity-25 text-danger rounded-pill px-3">支出</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end fw-bold {{ 'text-income' if record.type == 'income' else 'text-expense' }}">
+                        {{ '+' if record.type == 'income' else '-' }}$ {{ "{:,}".format(record.amount) }}
+                    </td>
+                    <td class="text-end">
+                        <a href="{{ url_for('main.edit_record', id=record.id) }}" class="btn btn-sm btn-outline-secondary rounded-pill me-2">編輯</a>
+                        <form action="{{ url_for('main.delete_record', id=record.id) }}" method="POST" class="d-inline" onsubmit="return confirm('確定要刪除這筆紀錄嗎？');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill">刪除</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="text-center py-5 opacity-50">
+        <p class="mb-0 fs-5">尚無任何收支紀錄，現在就新增一筆吧！</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

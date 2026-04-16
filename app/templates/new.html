@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="glass-card p-4 p-md-5 glass-card-hover">
+            <h2 class="mb-4 text-center">新增收支紀錄</h2>
+            
+            <form action="{{ url_for('main.create_record') }}" method="POST">
+                <div class="mb-4">
+                    <label for="type" class="form-label text-muted">類型</label>
+                    <select class="form-select" id="type" name="type" required>
+                        <option value="expense" selected>支出 (Expense)</option>
+                        <option value="income">收入 (Income)</option>
+                    </select>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="title" class="form-label text-muted">明細名稱</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="例如：午餐、薪水..." required>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="amount" class="form-label text-muted">金額</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-dark border-secondary text-white">$</span>
+                        <input type="number" class="form-control" id="amount" name="amount" min="1" placeholder="輸入大於 0 的整數" required>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="date" class="form-label text-muted">發生日期</label>
+                    <input type="date" class="form-control" id="date" name="date" required>
+                </div>
+
+                <div class="d-grid mt-5">
+                    <button type="submit" class="btn btn-primary-custom btn-lg py-3 rounded-pill">儲存紀錄</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('main.index') }}" class="text-decoration-none text-muted opacity-75">← 返回首頁</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 自動帶入今天日期
+    document.getElementById('date').valueAsDate = new Date();
+</script>
+{% endblock %}
